@@ -37,6 +37,12 @@ class ViewController: UIViewController {
         }
     }
     
+    func setMessage(message : String) {
+        DispatchQueue.main.async {
+            self.responseText.text = message
+        }
+    }
+    
     
     @IBAction func userNameChanged(_ sender: UITextField) {
        enableButtonFunc()
@@ -64,7 +70,7 @@ class ViewController: UIViewController {
         let task = URLSession.shared.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
             if error != nil
             {
-                print("error=\(error!)")
+                self.setMessage(message: "Error with login service \(error!)")
                 return
             }
             do {
@@ -75,13 +81,11 @@ class ViewController: UIViewController {
                     // Now we can access value of First Name by its key
                     let responseValue = parseJSON["id_token"] as? String
                     if (responseValue != nil){
-                        DispatchQueue.main.async {
-                            self.responseText.text = "Your token is \(String(describing: responseValue))"
-                        }
+                        self.setMessage(message:  "Your token is \(String(describing: responseValue))")
+                        
                     } else {
-                        DispatchQueue.main.async {
-                            self.responseText.text = "Bad User Name or Password"
-                        }
+                        self.setMessage(message: "Bad User Name or Password")
+                        
                     }
                 }
             } catch {
